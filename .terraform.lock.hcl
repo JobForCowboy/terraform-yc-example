@@ -9,6 +9,14 @@ provider "registry.terraform.io/hashicorp/aws" {
   ]
 }
 
+provider "registry.terraform.io/hashicorp/local" {
+  version     = "2.5.3"
+  constraints = "> 2.2.0"
+  hashes = [
+    "h1:1Nkh16jQJMp0EuDmvP/96f5Unnir0z12WyDuoR6HjMo=",
+  ]
+}
+
 provider "registry.terraform.io/hashicorp/random" {
   version     = "3.7.2"
   constraints = "> 3.5.0"
@@ -25,9 +33,9 @@ provider "registry.terraform.io/hashicorp/time" {
 }
 
 provider "registry.terraform.io/yandex-cloud/yandex" {
-  version     = "0.141.0"
-  constraints = "> 0.9.0, >= 0.35.0"
+  version     = "0.144.0"
+  constraints = "> 0.9.0, >= 0.89.0, >= 0.101.0, >= 0.144.0"
   hashes = [
-    "h1:YnTOy3shxgWQdIea/KpoEka1P9YHUMFTm7vm1EobDUo=",
+    "h1:JdavlzpEOVrkHUD8rqEvHk8GXiNt5u6Y3JqgiGkmtvE=",
   ]
 }

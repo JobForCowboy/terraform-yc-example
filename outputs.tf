@@ -18,7 +18,7 @@ output "instance_ids" {
 
 output "instance_public_ip_addresses" {
   description = "The external IP addresses of the instances."
-  value = {}
+  value       = {}
 }
 
 output "subnet_ids" {
@@ -39,11 +39,7 @@ output "bucket_name" {
   value       = module.s3.bucket_name
 }
 
-
-# output "serial_port_files" {
-#   description = "The Serial port's output files."
-#   value = [
-#     for instance in yandex_compute_instance.this :
-#     "serial_output_${instance.name}.txt"
-#   ]
-# }
+output "vpc_id" {
+  description = "ID of the created VPC network"
+  value       = module.net.vpc_id
+}

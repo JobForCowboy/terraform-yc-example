@@ -91,7 +91,7 @@ resource "yandex_compute_instance" "this" {
 }
 
 module "net" {
-  source = "github.com/terraform-yc-modules/terraform-yc-vpc.git?ref=19a9893f25b2536cea3c9c15c180c905ea37bf9c"
+  source       = "github.com/terraform-yc-modules/terraform-yc-vpc.git?ref=19a9893f25b2536cea3c9c15c180c905ea37bf9c"
   network_name = local.vpc_network_name
   create_sg    = false
   public_subnets = [
@@ -105,7 +105,7 @@ module "net" {
 
 # Создание Yandex Managed Service for YDB
 resource "yandex_ydb_database_serverless" "this" {
-  name = local.ydb_serverless_name
+  name        = local.ydb_serverless_name
   location_id = "ru-central1"
 }
 
@@ -119,7 +119,7 @@ resource "time_sleep" "wait_180_seconds" {
   create_duration = "180s"
 
   depends_on = [yandex_compute_instance.this]
-} 
+}
 
 resource "yandex_compute_snapshot" "initial" {
   for_each = yandex_compute_disk.boot_disk
@@ -131,21 +131,48 @@ resource "yandex_compute_snapshot" "initial" {
 }
 
 resource "time_sleep" "wait_for_iam" {
-  depends_on = [module.s3]
+  depends_on      = [module.s3]
   create_duration = "60s"
 }
 
-resource "terraform_data" "get_serial_output" {
-  for_each = yandex_compute_instance.this
-
-  provisioner "local-exec" {
-    command = "yc compute instance get-serial-port-output --id ${each.value.id} --folder-id ${var.folder_id} > serial_output_${each.value.name}.txt"
-  }
-
-  depends_on = [ time_sleep.wait_180_seconds ]
-} 
-
 module "s3" {
-  source = "github.com/terraform-yc-modules/terraform-yc-s3.git?ref=9fc2f832875aefb6051a2aa47b5ecc9a7ea8fde5"
+  source      = "github.com/terraform-yc-modules/terraform-yc-s3.git?ref=9fc2f832875aefb6051a2aa47b5ecc9a7ea8fde5"
   bucket_name = local.bucket_name
 }
+
+locals {
+  pg_subnet_id = [
+    for s in values(module.net.public_subnets) : s.subnet_id if s.zone == "ru-central1-a"
+  ][0]
+}
+
+module "postgresql" {
+  source     = "github.com/terraform-yc-modules/terraform-yc-postgresql"
+  name       = "my-pg"
+  pg_version = "15"
+  folder_id  = var.folder_id
+  network_id = module.net.vpc_id
+
+  hosts_definition = [
+    {
+      zone             = "ru-central1-a"
+      subnet_id        = local.pg_subnet_id
+      assign_public_ip = true
+    }
+  ]
+
+  owners = [
+    {
+      name     = "app_owner"
+      password = var.app_owner_password
+    }
+  ]
+
+  databases = [
+    {
+      name  = "appdb"
+      owner = "app_owner"
+    }
+  ]
+}
+

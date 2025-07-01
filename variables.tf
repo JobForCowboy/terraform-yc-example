@@ -104,3 +104,20 @@ variable "secondary_disks" {
     size  = 10
   }
 }
+
+variable "pg_cluster_name" {
+  description = "Имя кластера PostgreSQL"
+  type        = string
+  default     = "my-pg"
+}
+
+variable "pg_version" {
+  description = "Версия PostgreSQL"
+  type        = string
+  default     = "15"
+}
+
+variable "app_owner_password" {
+  description = "Пароль для владельца базы данных"
+  type        = string
+}
