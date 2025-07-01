@@ -82,7 +82,7 @@
 |-------|----------------------------------------------------------------------|--------------------------------------------|
 | net   | github.com/terraform-yc-modules/terraform-yc-vpc.git                | 19a9893f25b2536cea3c9c15c180c905ea37bf9c   |
 | s3    | github.com/terraform-yc-modules/terraform-yc-s3.git                 | 9fc2f832875aefb6051a2aa47b5ecc9a7ea8fde5   |
-| pg    | внешний модуль PostgreSQL (укажите ссылку или путь при необходимости) | —                                          |
+| pg    | https://github.com/terraform-yc-modules/terraform-yc-postgresql     | —                                          |
 
 ---
 
