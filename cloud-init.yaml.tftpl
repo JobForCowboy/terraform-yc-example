@@ -1,0 +1,27 @@
+#cloud-config
+datasource:
+  Ec2:
+    strict_id: false
+ssh_pwauth: no
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDf5rgmYwUHgj6esKmSME1PY5E20N/ZpSiX2Nb4W+55rGWWFpMNCuT5T6wljle2HeDEcPgaNcSvw4ZZPzud8YULjZGslFcJthgj4phAeoj964z1Fp5pzGD4LyzLGliVO2Xq+lxSV2+bu5In26doBr3EapPiFC0pPoJaMndFNRRofQJ//pdTDZBVuZ5n/Nv3t1/RrfS3tYGtS9IelHVG5OEK4x2ATlmc8WerDkpQ/Sc4/dn3XblNi2fvW5pYJdM5tJ9Qk5H+STDMdq4eR5F8RkS2kQ5L4BDrg+0zY/zFkJzdkvV6Kw27jCkGlTHUr2IBFu/Ljq5dYUDQ6Pi9OIvx/sewoH2oAN0wdNUXgTASn+xho63aND3QwGcgrN4BphwVldFPv1VK4YjXRARiZm1pnk43j0oWJZLM1uXltGPRmkPC9Mjbwzzx3D4hRzpQ73OKnR1CYuy0InNY1yfAARni2XMev0fr3MqYEEnbOuRV8G9sBQ2M1heOYOuXxtrKypP8AKUdwfcdWKLJGkoj5uf0slN2hMl969HSEq1dZY5bDxC5UqgNdecFzQ+XD82jhorzbA213hVJOoQdbpdUA2DVz9TxReKaaNLNpx+y+q/rfUiYgwo6KCjnaJ17+IuS+LodFo6Cvp5AAR9074jMf4kD/lADkzLmjCvPI3MqeSEb7tSp9Q==
+package_update: false
+package_upgrade: false
+packages:
+  - nginx
+runcmd: 
+  - |
+    sudo tee -a /var/www/html/index.nginx-debian.html > /dev/null <<'EOF'
+    <!doctype html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Terraform provisioned</title>
+    </head>
+    <body>
+        <h1>Endpoints</h1>    
+        <p>We have just provisioned YDB. You can connect to it via: <br><b>${ydb_connect_string}</b></p>
+        <p>We have just provisioned Yandex Object Storage. You can find it here: <br><b>${bucket_domain_name}</b></p>        
+    </body>
+    </html>
+    EOF
